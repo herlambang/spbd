@@ -1,0 +1,46 @@
+{
+    "[python]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.formatOnPaste": false,
+        "editor.formatOnSaveMode": "file",
+        // "editor.codeActionsOnSave": {
+        //     "source.organizeImports": true
+        // },
+    },
+    // "python.analysis.extraPaths": [
+        // "tmp/notebook/migrasi-3.0"
+    //],
+    "isort.args": [
+        "--profile",
+        "black"
+    ],
+    "black-formatter.args": ["--line-length", "120"],
+    "flake8.args": ["--max-line-length=120"],
+    "files.exclude": {
+        "pytorch": true,
+        "**/pytorch/**": true,
+        ".venv": true,
+        "**/.venv/**": true,
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/node_modules": true,
+        "**/bower_components": true,
+        "**/dist": true
+    },
+    "files.watcherExclude": {
+        "pytorch": true,
+        "**/pytorch/**": true,
+        ".venv": true,
+        "**/.venv/**": true,
+        "**/.git/objects/**": true,
+        "**/.git/subtree-cache/**": true,
+        "**/node_modules/**": true,
+        "**/tmp/**": true,
+        "**/bower_components/**": true,
+        "**/dist/**": true
+    }
+}

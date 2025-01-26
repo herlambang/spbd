@@ -10,6 +10,7 @@ python = "^3.11"
 fastapi = {extras = ["standard"], version = "^0.115.7"}
 pydantic-settings = "^2.7.1"
 psycopg = "^3.2.4"
+sqlmodel = "^0.0.22"
 
 
 [tool.poetry.group.dev.dependencies]
