@@ -1,24 +1,17 @@
-from abc import ABC, abstractmethod
-from sqlmodel import Session, select
+from typing import Annotated
+
 from fastapi import Depends
+from sqlmodel import Session, select
 
 from spbd.domain.entities import User
 from spbd.infra.db import get_session
-from typing import Annotated
-
-
-class CRUDRepository(ABC):
-
-    @abstractmethod
-    def get(self, id: int) -> User:
-        pass
+from spbd.repositories.common import CRUDRepository
 
 
 class UserRepository(CRUDRepository):
-    session: Session
 
     def __init__(self, session: Annotated[Session, Depends(get_session)]):
-        self.session = session
+        self.session: Session = session
 
     def get(self, id: int) -> User | None:
         stm = select(User).where(User.id == id)

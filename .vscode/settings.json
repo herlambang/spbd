@@ -4,12 +4,12 @@
         "editor.defaultFormatter": "ms-python.black-formatter",
         "editor.formatOnPaste": false,
         "editor.formatOnSaveMode": "file",
-        // "editor.codeActionsOnSave": {
-        //     "source.organizeImports": true
-        // },
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit"
+        },
     },
     // "python.analysis.extraPaths": [
-        // "tmp/notebook/migrasi-3.0"
+        // "tmp"
     //],
     "isort.args": [
         "--profile",

@@ -1,7 +1,9 @@
-from fastapi import APIRouter, Depends
-from spbd.usecases import UserUseCase
 from typing import Annotated
-from spbd.exceptions import NotFound
+
+from fastapi import APIRouter, Depends
+
+from spbd.core.exceptions import NotFound
+from spbd.usecases import UserUseCase
 
 user_router = APIRouter(prefix="/v1/users")
 
