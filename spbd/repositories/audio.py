@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Annotated
 
 from fastapi import Depends
@@ -22,3 +23,9 @@ class AudioRepository(CRUDRepository):
         stm = select(Audio).where(Audio.user_id == user_id, Audio.phrase_id == phrase_id)
         result = self.session.exec(stm)
         return result.one_or_none()
+
+    def create(self, user_id: int, phrase_id: int) -> Audio:
+        new_audio_path = Path("wav") / f"audio_{user_id}_{phrase_id}.wav"
+        audio = Audio(user_id=user_id, phrase_id=phrase_id, path=str(new_audio_path))
+        self.session.add(audio)
+        self.session.commit()

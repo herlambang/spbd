@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import BinaryIO
 
 from pydub import AudioSegment
 
@@ -10,6 +11,10 @@ def format_to_ext(format: str) -> str:
         format = "." + format
 
     return format
+
+
+def ext_to_format(ext: str) -> str:
+    return ext.removeprefix(".")
 
 
 def get_cached_dir():
@@ -28,7 +33,7 @@ def get_cached_path(file_path: Path, ext: str) -> Path:
     return cached_dir / cached_file_name
 
 
-def convert_wav(file_path: Path, format="m4a") -> Path:
+def convert_from_wav(file_path: Path, format="m4a") -> Path:
     ext = format_to_ext(format)
     cached_path = get_cached_path(file_path, ext=ext)
 
@@ -55,3 +60,14 @@ def get_file_fullpath(file_path: Path | str):
 
 def is_valid_audio_format(format: str) -> bool:
     return format in settings.audio_formats
+
+
+def wav_storage_dir() -> Path:
+    return settings.storage_path / "wav"
+
+
+def convert_to_wav(content: BinaryIO, target_path: Path):
+    audio: AudioSegment = AudioSegment.from_file(content)
+    audio.export(target_path, format="wav")
+
+    return target_path
