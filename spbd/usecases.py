@@ -1,4 +1,4 @@
-from spbd.repositories import UserRepository
+from spbd.repositories.user import UserRepository
 from fastapi import Depends
 from typing import Annotated
 
