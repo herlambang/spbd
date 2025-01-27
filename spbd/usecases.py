@@ -1,6 +1,8 @@
-from spbd.repositories.user import UserRepository
-from fastapi import Depends
 from typing import Annotated
+
+from fastapi import Depends
+
+from spbd.repositories.user import UserRepository
 
 
 class UserUseCase:

@@ -1,7 +1,6 @@
 from sqlmodel import Session, create_engine
 
-from spbd.config import settings
-
+from spbd.core.config import settings
 
 engine = create_engine(settings.db_url)
 

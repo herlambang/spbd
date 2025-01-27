@@ -1,5 +1,6 @@
-from spbd.repositories.user import UserRepository
 from sqlmodel import Session
+
+from spbd.repositories.user import UserRepository
 
 
 def test_get(session_fixture: Session, users_fixture):

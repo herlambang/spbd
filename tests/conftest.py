@@ -1,6 +1,6 @@
+import pytest
 from sqlmodel import Session, SQLModel, create_engine, delete
 from sqlmodel.pool import StaticPool
-import pytest
 
 from spbd.domain.entities import User
 

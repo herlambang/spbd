@@ -1,7 +1,8 @@
-from fastapi.testclient import TestClient
-from spbd.main import app
-from spbd.infra.db import get_session
 from fastapi import status
+from fastapi.testclient import TestClient
+
+from spbd.infra.db import get_session
+from spbd.main import app
 
 
 def test_get(session_callable_fixture, users_fixture):

@@ -1,10 +1,11 @@
-from spbd.repositories.common import CRUDRepository
-from sqlmodel import Session, select
+from typing import Annotated
+
 from fastapi import Depends
+from sqlmodel import Session, select
 
 from spbd.domain.entities import User
 from spbd.infra.db import get_session
-from typing import Annotated
+from spbd.repositories.common import CRUDRepository
 
 
 class UserRepository(CRUDRepository):
