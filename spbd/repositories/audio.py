@@ -29,3 +29,7 @@ class AudioRepository(CRUDRepository):
         audio = Audio(user_id=user_id, phrase_id=phrase_id, path=str(new_audio_path))
         self.session.add(audio)
         self.session.commit()
+
+        self.session.refresh(audio)
+
+        return audio

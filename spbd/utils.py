@@ -66,7 +66,7 @@ def wav_storage_dir() -> Path:
     return settings.storage_path / "wav"
 
 
-def convert_to_wav(content: BinaryIO, target_path: Path):
+def convert_to_wav(content: BinaryIO, target_path: Path) -> Path:
     audio: AudioSegment = AudioSegment.from_file(content)
     audio.export(target_path, format="wav")
 

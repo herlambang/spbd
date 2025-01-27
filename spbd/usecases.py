@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Annotated, BinaryIO
 
 from fastapi import Depends
@@ -29,10 +30,24 @@ class PhraseUseCase:
         return self.phrase_repo.get(id)
 
 
+class AudioConverterUseCase:
+
+    def convert_from_wav(self, file_path: Path, format="m4a") -> Path:
+        return utils.convert_from_wav(file_path, format)
+
+    def convert_to_wav(self, content: BinaryIO, target_path: Path):
+        return utils.convert_to_wav(content, target_path)
+
+
 class AudioUseCase:
 
-    def __init__(self, audio_repo: Annotated[AudioRepository, Depends(AudioRepository)]):
+    def __init__(
+        self,
+        audio_repo: Annotated[AudioRepository, Depends(AudioRepository)],
+        converter: Annotated[AudioConverterUseCase, Depends()],
+    ):
         self.audio_repo = audio_repo
+        self.converter = converter
 
     def find_by_user_phrase(self, user_id: int, phrase_id: int) -> Audio:
         return self.audio_repo.find_by_user_phrase(user_id, phrase_id)
@@ -44,13 +59,13 @@ class AudioUseCase:
         if format == "wav":
             out_path = audio_path
         else:
-            out_path = utils.convert_from_wav(audio_path, format=format)
+            out_path = self.converter.convert_from_wav(audio_path, format=format)
 
         return AudioDownloadInfo(file_path=out_path, download_name=out_file_name)
 
     def create(self, user_id: int, phrase_id: int) -> Audio:
         return self.audio_repo.create(user_id, phrase_id)
 
-    def store_file(self, audio: Audio, content: BinaryIO, format="wav"):
+    def store_file(self, audio: Audio, content: BinaryIO):
         audio_path = settings.storage_path / audio.path
-        utils.convert_to_wav(content, audio_path)
+        self.converter.convert_to_wav(content, audio_path)
