@@ -1,8 +1,10 @@
+from pathlib import Path
+
 import pytest
 from sqlmodel import Session, SQLModel, create_engine, delete
 from sqlmodel.pool import StaticPool
 
-from spbd.domain.entities import User
+from spbd.domain.entities import Audio, Phrase, User
 
 
 def get_session():
@@ -15,6 +17,20 @@ def get_session():
 def add_users(session_fixture: Session):
     session_fixture.add(User(email="abc@gmail.com", id=1))
     session_fixture.add(User(email="bcd@gmail.com", id=2))
+    session_fixture.commit()
+
+
+def add_phrases(session_fixture: Session):
+    session_fixture.add(Phrase(id=1, words="play football"))
+    session_fixture.add(Phrase(id=2, words="python code based"))
+    session_fixture.commit()
+
+
+def add_audios(session_fixture: Session):
+    add_users(session_fixture)
+    add_phrases(session_fixture)
+
+    session_fixture.add(Audio(id=1, user_id=1, phrase_id=1, path=str(Path(__file__))))
     session_fixture.commit()
 
 
@@ -36,12 +52,22 @@ def users_fixture(session_fixture: Session):
     add_users(session_fixture)
 
 
+@pytest.fixture()
+def phrases_fixture(session_fixture: Session):
+    add_phrases(session_fixture)
+
+
+@pytest.fixture()
+def audios_fixture(session_fixture: Session):
+    add_audios(session_fixture)
+
+
 @pytest.fixture(autouse=True)
 def before_after(session_fixture: Session):
 
     yield
 
-    models = [User]
+    models = [User, Phrase, Audio]
 
     for m in models:
         stm = delete(m)
