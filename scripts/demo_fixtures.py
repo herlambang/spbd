@@ -1,3 +1,7 @@
+"""
+Add fixtures data for demo purpose.
+"""
+
 import sys
 from pathlib import Path
 

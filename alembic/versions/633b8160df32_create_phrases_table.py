@@ -23,7 +23,7 @@ def upgrade() -> None:
     op.create_table(
         "phrases",
         sa.Column("id", sa.Integer, primary_key=True),
-        sa.Column("words", sa.Text),
+        sa.Column("words", sa.String(255), nullable=False),
     )
 
 

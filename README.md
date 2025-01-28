@@ -13,11 +13,14 @@ ReST based audio converter prototype.
 1. Create file `.env.compose`. 
 
 2. Add these environment variable with preferred values  
-DB_USER=theuser  
-DB_PASSWORD=pwd123  
-DB_NAME=thedb  
-DB_PORT=5433  
-APP_PORT=8000
+    DB_USER=theuser  
+    DB_PASSWORD=pwd123  
+    DB_NAME=thedb  
+    DB_PORT=5433  
+    APP_PORT=8000  
+    _ENV=prod
+
+    > Sample also can be found in env.example
 
 3. Build image and start the containers
     ```sh

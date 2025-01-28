@@ -13,8 +13,11 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
+    # Sourced from env vars
     _env: str = "dev"
     db_url: str
+
+    # Static settings
     storage_path: Path = PROJECT_PATH / "storage"
     audio_formats: list[str] = ["m4a"]
 
