@@ -1,0 +1,48 @@
+name: 'spbd'
+services:
+  rest:
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
+      tags:
+        - spbd:0.1.0
+    container_name: spbd-rest
+    environment:
+      _ENV: prod
+      DB_URL: postgresql+psycopg://$DB_USER:$DB_PASSWORD@postgres:5432/$DB_NAME
+    ports:
+      - "$APP_PORT:80"
+    networks:
+      - intranet
+    command: >
+        /bin/bash -c "alembic upgrade head &&
+        python scripts/demo_fixtures.py &&
+        fastapi run /app/spbd/main.py --port 80"
+    depends_on:
+      wait-for-postgres:
+        condition: service_completed_successfully
+    volumes:
+      - "../scripts:/app/scripts"
+      - "../storage:/app/storage"
+  postgres:
+    image: postgres:13.7
+    ports:
+      - "$DB_PORT:5432"
+    environment:
+      - POSTGRES_USER=$DB_USER
+      - POSTGRES_PASSWORD=$DB_PASSWORD
+      - POSTGRES_DB=$DB_NAME
+    networks:
+      - intranet
+    healthcheck:
+      test: "exit 0"
+  wait-for-postgres:
+    image: atkrad/wait4x
+    depends_on:
+      - postgres
+    command: tcp postgres:5432
+    networks:
+      - intranet
+networks:
+  intranet:
+

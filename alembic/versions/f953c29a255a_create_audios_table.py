@@ -25,7 +25,7 @@ def upgrade() -> None:
         sa.Column("id", sa.Integer, primary_key=True),
         sa.Column("user_id", sa.Integer, sa.ForeignKey("users.id")),
         sa.Column("phrase_id", sa.Integer, sa.ForeignKey("phrases.id")),
-        sa.Column("path", sa.Text),
+        sa.Column("path", sa.String(255), nullable=False),
     )
 
 

@@ -17,7 +17,7 @@ log = logging.getLogger(__name__)
 def download_audio(
     user_id: int,
     phrase_id: int,
-    usecase: Annotated[AudioUseCase, Depends(AudioUseCase)],
+    audio_usecase: Annotated[AudioUseCase, Depends(AudioUseCase)],
     format: str = "m4a",
 ):
     format = format.lower()
@@ -25,17 +25,19 @@ def download_audio(
     if not utils.is_valid_audio_format(format):
         raise HTTPBadRequest(f"{format} is not acceptable format")
 
-    if audio := usecase.find_by_user_phrase(user_id, phrase_id):
+    if audio := audio_usecase.find_by_user_phrase(user_id, phrase_id):
         try:
             utils.ensure_file(utils.get_file_fullpath(audio.path))
         except FileNotFoundError as e:
+            # If somehow data object exist but file is not there
             log.error(e)
             raise HTTPError()
 
-        audio_info = usecase.get_audio_download_info(audio, format=format)
+        audio_info = audio_usecase.get_audio_download_info(audio, format=format)
 
         return FileResponse(audio_info.file_path, filename=audio_info.download_name)
     else:
+        # No audio data
         raise HTTPNotFound("audio not found")
 
 
@@ -67,7 +69,14 @@ def upload_audio(
         log.debug(f"audio object not found, create new u:{user_id} p:{phrase_id}")
         audio = audio_usecase.create(user_id, phrase_id)
 
-    audio_usecase.store_file(audio, audio_file.file)
-    audio_file.file.close()
+    try:
+        audio_usecase.store_file(audio, audio_file.file)
+        audio_file.file.close()
+    except Exception as e:
+        log.error("Unable to store/convert file")
+        log.exception(e)
+        audio_usecase.cleanup(audio.id)
+    else:
+        audio_file.file.close()
 
     return audio
