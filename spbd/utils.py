@@ -26,6 +26,15 @@ def get_cached_dir():
     return cached_dir
 
 
+def get_wav_dir():
+    wav_dir = settings.storage_path / "wav"
+
+    if not wav_dir.is_dir():
+        wav_dir.mkdir()
+
+    return wav_dir
+
+
 def get_cached_path(file_path: Path, ext: str) -> Path:
     file_stem = file_path.stem
     cached_file_name = f"{file_stem}{ext}"
