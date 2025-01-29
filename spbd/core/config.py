@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     )
 
     # Sourced from env vars
-    _env: str = "dev"
+    env_: str = "dev"
     db_url: str
     storage_dir: Path = PROJECT_PATH / "storage"
 

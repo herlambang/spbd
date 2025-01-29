@@ -8,7 +8,7 @@ services:
         - spbd:0.1.0
     container_name: spbd-rest
     environment:
-      _ENV: prod
+      ENV_: prod
       DB_URL: postgresql+psycopg://$DB_USER:$DB_PASSWORD@postgres:5432/$DB_NAME
     ports:
       - "$APP_PORT:80"

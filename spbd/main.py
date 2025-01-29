@@ -12,7 +12,7 @@ from spbd.core.config import settings
 from spbd.routers.v1.audio import audio_router
 from spbd.routers.v1.user import user_router
 
-log_config = loggs.LOGGING if settings._env == "dev" else loggs.LOGGING_PRODUCTION
+log_config = loggs.LOGGING if settings.env_ == "dev" else loggs.LOGGING_PRODUCTION
 logging.config.dictConfig(log_config)
 log = logging.getLogger(__name__)
 
@@ -20,6 +20,7 @@ log = logging.getLogger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # ensure directory creation
+    print(settings.env_)
     utils.get_cached_dir()
     utils.get_audio_dir()
     yield

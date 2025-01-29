@@ -18,7 +18,7 @@ ReST based audio converter prototype.
     DB_NAME=thedb  
     DB_PORT=5433  
     APP_PORT=8000  
-    _ENV=prod
+    ENV_=prod
 
     > Sample also can be found in env.example
 
