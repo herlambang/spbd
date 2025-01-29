@@ -24,7 +24,7 @@ def get_cached_dir():
     """
     Get cache directory
     """
-    cached_dir = settings.storage_path / "cached"
+    cached_dir = settings.cached_dir
 
     if not cached_dir.is_dir():
         cached_dir.mkdir()
@@ -32,16 +32,16 @@ def get_cached_dir():
     return cached_dir
 
 
-def get_wav_dir():
+def get_audio_dir():
     """
     Get wav directory
     """
-    wav_dir = settings.storage_path / "wav"
+    audio_dir = settings.audio_dir
 
-    if not wav_dir.is_dir():
-        wav_dir.mkdir()
+    if not audio_dir.is_dir():
+        audio_dir.mkdir()
 
-    return wav_dir
+    return audio_dir
 
 
 def get_cached_path(file_path: Path, ext: str) -> Path:
@@ -59,8 +59,7 @@ def ensure_file(file_path: Path):
     """
     Validate file
     - existance
-    - todo: format
-    - todo: size
+    - todo: other validation
     """
     if not file_path.is_file():
         raise FileNotFoundError(f"File {str(file_path)} does not exist")
@@ -70,7 +69,7 @@ def get_file_fullpath(file_path: Path | str):
     """
     Return file full path relative to storage settings
     """
-    return settings.storage_path / file_path
+    return settings.storage_dir / file_path
 
 
 def is_valid_audio_format(format: str) -> bool:

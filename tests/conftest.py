@@ -1,4 +1,13 @@
+# flake8: noqa
+
+import os
 from pathlib import Path
+
+storage_dir = Path(__file__).parent / "storage"
+os.environ["STORAGE_DIR"] = str(storage_dir)
+
+
+import shutil
 
 import pytest
 from sqlmodel import Session, SQLModel, create_engine, delete
@@ -62,8 +71,13 @@ def audios_fixture(session_fixture: Session):
     add_audios(session_fixture)
 
 
+@pytest.fixture()
+def sample_file_fixture():
+    return storage_dir / "sample.mp3"
+
+
 @pytest.fixture(autouse=True)
-def before_after(session_fixture: Session):
+def each_before_after(session_fixture: Session):
 
     yield
 
@@ -74,3 +88,12 @@ def before_after(session_fixture: Session):
         session_fixture.exec(stm)
 
     session_fixture.commit()
+
+
+@pytest.fixture(autouse=True, scope="session")
+def session_before_after():
+    yield
+
+    # clean up upload test folders
+    shutil.rmtree(storage_dir / "audio")
+    shutil.rmtree(storage_dir / "cached")

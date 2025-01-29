@@ -28,6 +28,8 @@ def upgrade() -> None:
         sa.Column("path", sa.String(255), nullable=False),
     )
 
+    op.create_index("audios_user_phrase_idx", "audios", ["user_id", "phrase_id"], unique=True)
+
 
 def downgrade() -> None:
     op.drop_table("audios")
