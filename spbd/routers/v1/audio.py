@@ -27,7 +27,7 @@ def download_audio(
 
     if audio := audio_usecase.find_by_user_phrase(user_id, phrase_id):
         try:
-            utils.ensure_file(utils.get_file_fullpath(audio.path))
+            utils.ensure_file(audio_usecase.get_full_path(audio))
         except FileNotFoundError as e:
             # If somehow data object exist but file is not there
             log.error(e)
@@ -52,30 +52,30 @@ def upload_audio(
 ):
     format = utils.ext_to_format(Path(audio_file.filename).suffix).lower()
 
-    if not utils.is_valid_audio_format(format):
-        raise HTTPBadRequest(f"{format} is not acceptable format")
+    if not audio_usecase.is_valid_format(audio_file.file, format):
+        raise HTTPBadRequest("Not acceptable file format")
 
     if not (user_usecase.get(user_id)):
-        raise HTTPNotFound("user not found")
+        raise HTTPNotFound("User not found")
 
     if not (phrase_usecase.get(phrase_id)):
-        raise HTTPNotFound("phrase not found")
+        raise HTTPNotFound("Phrase not found")
 
     audio = audio_usecase.find_by_user_phrase(user_id, phrase_id)
 
     if audio:
-        raise HTTPBadRequest("audio already exists")
+        raise HTTPBadRequest("Audio already exists")
     else:
         log.debug(f"audio object not found, create new u:{user_id} p:{phrase_id}")
         audio = audio_usecase.create(user_id, phrase_id)
 
     try:
-        audio_usecase.store_file(audio, audio_file.file)
-        audio_file.file.close()
+        audio_usecase.store_file(audio, audio_file.file, format)
     except Exception as e:
         log.error("Unable to store/convert file")
         log.exception(e)
         audio_usecase.cleanup(audio.id)
+        raise HTTPError()
     else:
         audio_file.file.close()
 
