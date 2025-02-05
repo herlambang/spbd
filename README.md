@@ -16,12 +16,13 @@ ReST based audio converter simulation.
 
 
 ## Components
-- Entities
+- Entities (Domain model)
     - User
     - Phrase
     - Audio
-- Repositories
-- Use cases
+- Repositories (Data Access)
+- Use cases (Business)
+- Routers (Controller)
 
 
 ## Development Setup
@@ -139,13 +140,13 @@ Sending wrong parameters will result in error response. Such as:
 - Sending user or phrase that doesn't exist
     ```sh
     $ curl -v --request POST http://localhost:8000/v1/audio/user/1/phrase/12 -F "audio_file=@song.m4a"
-    {"detail":"phrase not found"}
+    {"detail":"Neither user nor phrase found"}
     ```
 
 - Sending wrong file type
     ```sh
     $ curl -v --request POST http://localhost:8000/v1/audio/user/1/phrase/1 -F "audio_file=@song.jpg"
-    {"detail":"jpg is not acceptable format"
+    {"detail":"jpg is not acceptable format"}
     ```
 
 ### Fetching (download) audio data
