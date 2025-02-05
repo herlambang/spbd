@@ -13,6 +13,7 @@ from pydub import AudioSegment
 
 from spbd import utils
 from spbd.core.config import settings
+from spbd.core.exceptions import EntityNotFound
 from spbd.domain.entities import Audio, User
 from spbd.domain.values import AudioDownloadInfo
 from spbd.repositories.audio import AudioRepository
@@ -86,10 +87,14 @@ class AudioUseCase:
 
     def __init__(
         self,
-        audio_repo: Annotated[AudioRepository, Depends(AudioRepository)],
+        audio_repo: Annotated[AudioRepository, Depends()],
+        user_repo: Annotated[UserRepository, Depends()],
+        phrase_repo: Annotated[PhraseRepository, Depends()],
         converter: Annotated[AudioConverterUseCase, Depends()],
     ):
         self.audio_repo = audio_repo
+        self.user_repo = user_repo
+        self.phrase_repo = phrase_repo
         self.converter = converter
 
     def find_by_user_phrase(self, user_id: int, phrase_id: int) -> Audio:
@@ -119,6 +124,7 @@ class AudioUseCase:
         """
         Add audio object into db
         """
+        self.validate_user_phrase(user_id, phrase_id)
         return self.audio_repo.create(user_id, phrase_id)
 
     def store_file(self, audio: Audio, content: BinaryIO, format: str):
@@ -159,3 +165,9 @@ class AudioUseCase:
 
     def get_full_path(self, audio: Audio) -> Path:
         return settings.audio_dir / audio.path
+
+    def validate_user_phrase(self, user_id: int, phrase_id: int) -> None:
+        if not (self.user_repo.get(user_id) and self.phrase_repo.get(phrase_id)):
+            raise EntityNotFound("Neither user nor phrase found")
+
+        return None

@@ -91,6 +91,28 @@ def test_upload_audio_error(session_callable_fixture, users_fixture, phrases_fix
     assert audio is None
 
 
+def test_upload_audio_not_found(session_callable_fixture, users_fixture, phrases_fixture):
+    app.dependency_overrides[get_session] = session_callable_fixture
+
+    with TestClient(app, raise_server_exceptions=False) as client:
+        fh = io.BytesIO()
+
+        file_payload = {
+            "audio_file": ("sample.m4a", fh),
+        }
+
+        response = client.post("/v1/audio/user/10/phrase/10", files=file_payload)
+
+        assert response.status_code == status.HTTP_404_NOT_FOUND
+
+    session: Session = next(session_callable_fixture())
+    stm = select(Audio).where(Audio.user_id == 10, Audio.phrase_id == 10).limit(1)
+    audio = session.exec(stm).one_or_none()
+
+    # make sure audio is cleaned up when error occurs
+    assert audio is None
+
+
 def test_get_audio_error(session_callable_fixture, audios_fixture):
     app.dependency_overrides[get_session] = session_callable_fixture
     app.dependency_overrides[AudioConverterUseCase] = FakeConverterError

@@ -6,8 +6,8 @@ from fastapi import APIRouter, Depends, UploadFile, status
 from fastapi.responses import FileResponse
 
 from spbd import utils
-from spbd.core.exceptions import HTTPBadRequest, HTTPError, HTTPNotFound
-from spbd.usecases import AudioUseCase, PhraseUseCase, UserUseCase
+from spbd.core.exceptions import EntityNotFound, HTTPBadRequest, HTTPError, HTTPNotFound
+from spbd.usecases import AudioUseCase
 
 audio_router = APIRouter(prefix="/v1/audio")
 log = logging.getLogger(__name__)
@@ -47,19 +47,17 @@ def upload_audio(
     user_id: int,
     phrase_id: int,
     audio_usecase: Annotated[AudioUseCase, Depends(AudioUseCase)],
-    user_usecase: Annotated[UserUseCase, Depends(UserUseCase)],
-    phrase_usecase: Annotated[PhraseUseCase, Depends()],
 ):
     format = utils.ext_to_format(Path(audio_file.filename).suffix).lower()
 
     if not audio_usecase.is_valid_format(audio_file.file, format):
         raise HTTPBadRequest("Not acceptable file format")
 
-    if not (user_usecase.get(user_id)):
-        raise HTTPNotFound("User not found")
-
-    if not (phrase_usecase.get(phrase_id)):
-        raise HTTPNotFound("Phrase not found")
+    try:
+        audio_usecase.validate_user_phrase(user_id, phrase_id)
+    except EntityNotFound as e:
+        log.error(e)
+        raise HTTPNotFound(str(e))
 
     audio = audio_usecase.find_by_user_phrase(user_id, phrase_id)
 
