@@ -145,7 +145,7 @@ class AudioUseCase:
         Remove audio record and files
         """
         audio = self.audio_repo.get(id)
-        audio_path = settings.storage_dir / audio.path
+        audio_path = settings.audio_dir / audio.path
         audio_path.unlink(missing_ok=True)
 
         # Clean up all cached file if any

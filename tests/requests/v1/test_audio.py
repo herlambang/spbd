@@ -24,7 +24,6 @@ class FakeConverterError:
 
 def test_upload_audio(session_callable_fixture, users_fixture, phrases_fixture, sample_file_fixture: Path):
     app.dependency_overrides[get_session] = session_callable_fixture
-    # app.dependency_overrides[AudioConverterUseCase] = FakeConverter
 
     with TestClient(app) as client:
         with sample_file_fixture.open("rb") as fh:
