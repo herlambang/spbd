@@ -8,20 +8,20 @@ class BaseModel(SQLModel):
 class User(BaseModel, table=True):
     __tablename__: str = "users"
     email: str
-    user_audios: list["Audio"] = Relationship(back_populates="users")
+    audios: list["Audio"] = Relationship(back_populates="user")
 
 
 class Phrase(BaseModel, table=True):
     __tablename__: str = "phrases"
     words: str
-    phrase_audios: list["Audio"] = Relationship(back_populates="phrases")
+    audios: list["Audio"] = Relationship(back_populates="phrase")
 
 
 class Audio(BaseModel, table=True):
     __tablename__: str = "audios"
-    user_id: int = Field(default=None, foreign_key="users.id")
-    phrase_id: int = Field(default=None, foreign_key="phrases.id")
+    user_id: int = Field(default=None, foreign_key="users.id", nullable=False)
+    phrase_id: int = Field(default=None, foreign_key="phrases.id", nullable=False)
     path: str
 
-    users: User = Relationship(back_populates="user_audios")
-    phrases: Phrase = Relationship(back_populates="phrase_audios")
+    user: User = Relationship(back_populates="audios")
+    phrase: Phrase = Relationship(back_populates="audios")
