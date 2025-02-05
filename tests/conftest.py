@@ -15,10 +15,15 @@ from sqlmodel.pool import StaticPool
 
 from spbd.domain.entities import Audio, Phrase, User
 
+engine = create_engine("sqlite://", connect_args={"check_same_thread": False}, poolclass=StaticPool)
+
+
+def create_db_and_tables():
+    SQLModel.metadata.drop_all(engine)
+    SQLModel.metadata.create_all(engine)
+
 
 def get_session():
-    engine = create_engine("sqlite://", connect_args={"check_same_thread": False}, poolclass=StaticPool)
-    SQLModel.metadata.create_all(engine)
     with Session(engine) as session:
         yield session
 
@@ -39,7 +44,7 @@ def add_audios(session_fixture: Session):
     add_users(session_fixture)
     add_phrases(session_fixture)
 
-    session_fixture.add(Audio(id=1, user_id=1, phrase_id=1, path=str(Path(__file__))))
+    session_fixture.add(Audio(user_id=1, phrase_id=1, path="fake_file.mp3"))
     session_fixture.commit()
 
 
@@ -92,6 +97,8 @@ def each_before_after(session_fixture: Session):
 
 @pytest.fixture(autouse=True, scope="session")
 def session_before_after():
+    create_db_and_tables()
+
     yield
 
     # clean up upload test folders
