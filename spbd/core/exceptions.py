@@ -14,3 +14,7 @@ class HTTPError(HTTPException):
 class HTTPBadRequest(HTTPException):
     def __init__(self, detail=None, headers=None):
         super().__init__(status.HTTP_400_BAD_REQUEST, detail, headers)
+
+
+class EntityNotFound(Exception):
+    pass
