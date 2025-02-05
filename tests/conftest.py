@@ -95,5 +95,8 @@ def session_before_after():
     yield
 
     # clean up upload test folders
-    shutil.rmtree(storage_dir / "audio")
-    shutil.rmtree(storage_dir / "cached")
+    if (audio_dir := storage_dir / "audio").is_dir():
+        shutil.rmtree(audio_dir)
+
+    if (cached_dir := storage_dir / "cached").is_dir():
+        shutil.rmtree(cached_dir)

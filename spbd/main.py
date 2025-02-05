@@ -20,7 +20,6 @@ log = logging.getLogger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # ensure directory creation
-    print(settings.env_)
     utils.get_cached_dir()
     utils.get_audio_dir()
     yield
